@@ -42,8 +42,18 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private void preorderRecursive(TreeNode<T> node, List<T> out) {
-        // TODO: implement Preorder: Root -> Left -> Right
-        // hint: check for null, then visit node, then recurse on left and right
+        // Root -> Left -> Right
+
+        // base case
+        if (node == null) {
+            return;
+        }
+        // root
+        out.add(node.value);
+        // left
+        preorderRecursive(node.left, out);
+        // right
+        preorderRecursive(node.right, out);
     }
 
     public List<T> inorderRecursive() {
@@ -53,7 +63,18 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private void inorderRecursive(TreeNode<T> node, List<T> out) {
-        // TODO: implement Inorder: Left -> Root -> Right
+        // Left -> Root -> Right
+
+        // base case
+        if (node == null) {
+            return;
+        }
+        // left
+        inorderRecursive(node.left, out);
+        // root
+        out.add(node.value);
+        // right
+        inorderRecursive(node.right, out);
     }
 
     public List<T> postorderRecursive() {
@@ -63,31 +84,56 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private void postorderRecursive(TreeNode<T> node, List<T> out) {
-        // TODO: implement Postorder: Left -> Right -> Root
+        // Left -> Right -> Root
+
+        // base case
+        if (node == null) {
+            return;
+        }
+        // left
+        postorderRecursive(node.left, out);
+        // right
+        postorderRecursive(node.right, out);
+        // root
+        out.add(node.value);
     }
 
     // --------- Level-order (Breadth-First) ----------
 
     public List<T> levelOrder() {
         List<T> result = new ArrayList<>();
-        // TODO: implement level-order using a Queue<TreeNode<T>>
-        // 1. if root is null, return empty list
-        // 2. enqueue root
-        // 3. while queue not empty:
-        //      - dequeue node
-        //      - add node.value to result
-        //      - enqueue children if not null (left then right)
+        // if root is null, return empty list
+        if (root == null) {
+            return result;
+        }
+
+        // create queue to process nodes in level-order
+        Queue<TreeNode<T>> queue = new ArrayDeque<>();
+        queue.add(root); // enqueue root
+
+        while (!queue.isEmpty()) {
+            TreeNode<T> current = queue.remove(); // dequeue node
+            result.add(current.value);            // add node.value to result
+            if (current.left != null) {           // enqueue left children
+                queue.add(current.left);
+            }
+            if (current.right != null) {          // enqueue right children
+                queue.add(current.right);
+            }
+        }
+
         return result;
     }
 
     // --------- Unified API via TraversalType ----------
 
     public List<T> getByTraversal(TraversalType type) {
-        // TODO: dispatch based on traversal type
-//        return switch (type) {
-//            default ->
-//                throw new IllegalArgumentException("Not implemented yet");
-//        };
-        return new ArrayList<>(); // placeholder
+        // dispatch based on traversal type
+        return switch (type) {
+            case PREORDER -> preorderRecursive();
+            case INORDER -> inorderRecursive();
+            case POSTORDER -> postorderRecursive();
+            case LEVEL_ORDER -> levelOrder();
+        };
     }
 }
